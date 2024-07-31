@@ -1,0 +1,36 @@
+# Ignorera allt
+*
+
+# Men inkludera .gitignore-filen
+!.gitignore
+
+# Inkludera .c och .h filer
+!*.c
+!*.h
+
+# Inkludera .md filer
+!*.md
+
+# Ignorera byggkataloger och filer
+/build/
+/bin/
+/obj/
+/Debug/
+/Release/
+
+# Ignorera CMake-specifika filer
+/CMakeFiles/
+/CMakeCache.txt
+/cmake_install.cmake
+/Makefile
+
+# Ignorera IDE-specifika filer
+/.vscode/
+/*.swp
+
+# Ignorera macOS-specifika filer
+*.DS_Store
+
+# Ignorera tillfälliga filer
+*.tmp
+*.log

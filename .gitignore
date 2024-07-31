@@ -1,38 +1,29 @@
-# Ignorera exekverbara filer
-main
-
-# Ignorera objektfiler och kompilatorns mellanprodukter
-*.o
-*.out
-
-# Ignorera temporära filer och kataloger
+# Ignorera byggkataloger och temporära filer
+build/
 *.log
 *.tmp
 *.swp
 *.bak
 *.dSYM/
 
-# Ignorera byggkataloger
-build/
+# Ignorera exekverbara filer
+*.out
 
-# Ignorera alla filer som inte är .c, .h, eller .md
-*
-!*.c
-!*.h
-!*.md
-!*.txt
+# Ignorera objektfiler och kompilatorns mellanprodukter
+*.o
+*.obj
 
-# Inkludera .gitignore-filen
-!.gitignore
-
-# Ignorera CMake-specifika filer och kataloger
-/CMakeFiles/
-/CMakeCache.txt
-/cmake_install.cmake
-/Makefile
+# Ignorera systemspecifika filer
+.DS_Store
+Thumbs.db
 
 # Ignorera IDE-specifika filer
-/.vscode/
+.vscode/
+.idea/
 
-/# Ignorera macOS-specifika filer
-*.DS_Store
+# Tillåt endast dessa filer och mappar
+!.gitignore
+!README.md
+!src/
+!include/
+!CMakeLists.txt

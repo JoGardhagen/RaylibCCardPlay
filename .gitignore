@@ -1,24 +1,31 @@
-# Ignorera allt
+# Ignorera exekverbara filer
+main
+
+# Ignorera objektfiler och kompilatorns mellanprodukter
+*.o
+*.out
+
+# Ignorera temporära filer och kataloger
+*.log
+*.tmp
+*.swp
+*.bak
+*.dSYM/
+
+# Ignorera byggkataloger
+build/
+
+# Ignorera alla filer som inte är .c, .h, eller .md
 *
-
-# Men inkludera .gitignore-filen
-!.gitignore
-
-# Inkludera .c och .h filer
 !*.c
 !*.h
-
-# Inkludera .md filer
 !*.md
+!*.txt
 
-# Ignorera byggkataloger och filer
-/build/
-/bin/
-/obj/
-/Debug/
-/Release/
+# Inkludera .gitignore-filen
+!.gitignore
 
-# Ignorera CMake-specifika filer
+# Ignorera CMake-specifika filer och kataloger
 /CMakeFiles/
 /CMakeCache.txt
 /cmake_install.cmake
@@ -26,11 +33,6 @@
 
 # Ignorera IDE-specifika filer
 /.vscode/
-/*.swp
 
-# Ignorera macOS-specifika filer
+/# Ignorera macOS-specifika filer
 *.DS_Store
-
-# Ignorera tillfälliga filer
-*.tmp
-*.log

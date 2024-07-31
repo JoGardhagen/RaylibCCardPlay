@@ -21,6 +21,13 @@ Thumbs.db
 .vscode/
 .idea/
 
+!/raylib/
+# Ignorera endast specifika filer och mappar inom build/
+build/*.log
+build/*.tmp
+build/*.swp
+
+
 # Tillåt endast dessa filer och mappar
 !.gitignore
 !README.md

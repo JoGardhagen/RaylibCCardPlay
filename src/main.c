@@ -4,6 +4,7 @@
 #include "card.h"
 #include "gameplay.h"
 #include <string.h>
+#include <raylib.h>
 //#include "ai.h"
 
 // Funktion för att skriva ut spelarens hand

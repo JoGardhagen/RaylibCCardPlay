@@ -5,91 +5,85 @@
 #include "gameplay.h"
 #include <string.h>
 #include <raylib.h>
-//#include "ai.h"
+#include <unistd.h>
+#include <limits.h>
 
-// Funktion för att skriva ut spelarens hand
-/*void printHand(CardPile *hand) {
-    for (int i = 0; i < hand->size; i++) {
-        printf("Card %d: ", i + 1);
-        printCard(hand->cards[i]);
-        printf("\n");
-    }
-}*/
-
-// Huvudprogrammet
-/*int main() {
-    // Initiera och blanda kortleken
-    CardPile deck = { .cards = {0}, .size = 0, .capacity = DECK_SIZE };
-    initializeDeck(&deck);
-    shuffleDeck(&deck);
-
-    // Initiera spelarens hand och kasseringshögen
-    CardPile hand = { .cards = {0}, .size = 0, .capacity = DECK_SIZE };
-    CardPile discardPile = { .cards = {0}, .size = 0, .capacity = DECK_SIZE };
-
-    CardPile aiHand = { .cards = {0}, .size = 0, .capacity = DECK_SIZE };
-
-    // Dra initiala kort till spelarens hand
-    for (int i = 0; i < 5; i++) {
-        addCardToPile(&hand, drawCard(&deck));
-        addCardToPile(&aiHand,drawCard(&deck));
-    }
-
-    // Dra ett startkort till bordet från kortleken
-    addCardToPile(&discardPile, drawCard(&deck));
-    Card topCard = discardPile.cards[discardPile.size - 1];
-
-    //int turn = 0;
-    while (hand.size > 0|| aiHand.size <0) {
-        //if(turn==0){
-            printf("\nYour hand:\n");
-        //printHand(&hand);
-
-        printHandIllustrationASCII(&hand);
-
-        printf("\nTop card: ");
-        printCard(topCard);
-        printCardIllustrationASCII(topCard);
-
-        printf("\nChoose a card to play (1-%d, or 0 to draw 3 cards): ", hand.size);
-        int choice;
-        scanf("%d", &choice);
-
-        if (choice == 0) {
-            drawMultipleCardsToHand(&hand, 3, &deck, &discardPile);
-        } else if (choice > 0 && choice <= hand.size) {
-            Card selectedCard = hand.cards[choice - 1];
-
-            if (isPlayable(selectedCard, topCard)) {
-                if (hasMultipleOfSameRank(&hand, selectedCard.rank)) {
-                    playMultipleCardsOfSameRank(&hand, selectedCard.rank, &discardPile, selectedCard, choice, &topCard);
-                } else {
-                    playCard(&hand, choice, &discardPile, &topCard);
-                }
-            } else {
-                printf("Invalid card choice.\n");
-            }
-        } else {
-            printf("Invalid choice.\n");
-        }
-        /*}else{
-            aiPlayTurn(&aiHand,&discardPile,&topCard);
-        }
-        
-        
-    }
-
-    
-
-    printf("Congratulations! You have played all your cards.\n");
-
-    return 0;
-}*/
-
-
+Texture2D heart, diamond, club, spade;
 // Funktion för att rita ett kort på skärmen
 void RenderCard(Card card, int posX, int posY);
 Suit ChooseNewSuit(void);
+
+void LoadTextures() {
+    Image heartImage = LoadImage("../assets/heart.png");
+    Image diamondImage = LoadImage("../assets/diamond.png");
+    Image clubImage = LoadImage("../assets/club.png");
+    Image spadeImage = LoadImage("../assets/spades.png");
+
+    ImageResize(&heartImage, 30, 30);
+    ImageResize(&diamondImage, 30, 30);
+    ImageResize(&clubImage, 30, 30);
+    ImageResize(&spadeImage, 30, 30);
+
+    // Konvertera bilderna till texturer
+    heart = LoadTextureFromImage(heartImage);
+    diamond = LoadTextureFromImage(diamondImage);
+    club = LoadTextureFromImage(clubImage);
+    spade = LoadTextureFromImage(spadeImage);
+
+    // Frigör bildresurser
+    UnloadImage(heartImage);
+    UnloadImage(diamondImage);
+    UnloadImage(clubImage);
+    UnloadImage(spadeImage);
+}
+void UnloadTextures() {
+    UnloadTexture(heart);
+    UnloadTexture(diamond);
+    UnloadTexture(club);
+    UnloadTexture(spade);
+}
+void RenderCardSuit(Card card, int x, int y){
+
+    
+    Texture2D texture;
+    Color textColor;
+    switch(card.suit){
+        case HEARTS: 
+            texture = heart; 
+            textColor = RED; 
+            break;
+        case DIAMONDS: 
+            texture = diamond; 
+            textColor = RED; 
+            break;
+        case CLUBS: 
+            texture = club; 
+            textColor = BLACK; 
+            break;
+        case SPADES: 
+            texture = spade; 
+            textColor = BLACK; 
+            break;
+        default: 
+            texture = heart; 
+            textColor = BLACK; 
+            break; // Fallback
+    }
+    DrawTexture(texture, x+10,y+30,WHITE);
+
+    const char *rankNames[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+    char rankStr[3];
+    if (card.rank >= TWO && card.rank <= TEN) {
+        snprintf(rankStr, sizeof(rankStr), "%d", card.rank);
+    } else {
+        rankStr[0] = rankNames[card.rank][0];
+        rankStr[1] = (card.rank == TEN) ? rankNames[card.rank][1] : '\0';
+        rankStr[2] = '\0';
+    }
+
+    DrawText(rankStr, x + 10, y + 10, 20, textColor);
+
+}
 
 int main() {
     // Initiera och blanda kortleken
@@ -116,6 +110,10 @@ int main() {
     // Initiera Raylib och skapa ett fönster
     InitWindow(800, 600, "Card Game");
 
+    LoadTextures();
+
+    
+
     // Huvudspel loopen
     while (!WindowShouldClose()) {
         // Börja rita
@@ -126,12 +124,13 @@ int main() {
 
         // Rita spelarens hand
         for (int i = 0; i < hand.size; i++) {
-            RenderCard(hand.cards[i], 100 + i * 70, 400);
+            RenderCardSuit(hand.cards[i], 100 + i * 70, 400);
         }
 
         // Rita översta kortet i kasseringshögen
-        DrawText("Top card: \u2665", 350, 100, 20, DARKGRAY);
-        RenderCard(topCard, 400, 200);
+        DrawText("Top card:", 350, 100, 20, DARKGRAY);
+        //RenderCard(topCard, 400, 200);
+        RenderCardSuit(topCard,400,200);
 
         // Hantera användarinmatning
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -161,8 +160,12 @@ int main() {
         // Avsluta rita
         EndDrawing();
     }
+        UnloadTextures();
+
 
     // Stäng Raylib och rensa resurser
+
+   
     CloseWindow();
 
     printf("Congratulations! You have played all your cards.\n");

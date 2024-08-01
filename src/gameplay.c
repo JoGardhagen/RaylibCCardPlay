@@ -30,7 +30,7 @@ void playCard(CardPile *hand, int choice, CardPile *discardPile, Card *topCard) 
 
     // Hantera specialkort
     if (selectedCard.rank == EIGHT) {
-        chooseNewSuit(&selectedCard);  // Låt spelaren välja ny färg
+       // chooseNewSuit(&selectedCard);  // Låt spelaren välja ny färg
     }
 
     *topCard = selectedCard;

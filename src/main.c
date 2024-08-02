@@ -9,10 +9,6 @@
 #include <unistd.h>
 #include <limits.h>
 
-//Texture2D heart, diamond, club, spade;
-
-
-//Suit ChooseNewSuit(void);
 void printCardDetails(CardPile *pile) {
     for (int i = 0; i < pile->size; i++) {
         printf("Card %d: Rank %d, Suit %d\n", i, pile->cards[i].rank, pile->cards[i].suit);
@@ -21,28 +17,26 @@ void printCardDetails(CardPile *pile) {
 
 int main() {
     // Initiera och blanda kortleken
-    
     initializeDeck(&deck);
     shuffleDeck(&deck);
     printCardDetails(&deck);
 
     CardPile hand = { .cards = {0}, .size = 0, .capacity = DECK_SIZE };
 
-    //CardPile aiHand = { .cards = {0}, .size = 0, .capacity = DECK_SIZE };
-
     // Dra initiala kort till spelarens hand
     for (int i = 0; i < 5; i++) {
         addCardToPile(&hand, drawCard(&deck));
-        //addCardToPile(&aiHand, drawCard(&deck));
-    }
-    for(int i = 0;i<hand.size;i++){
-            printf("Card %d: Rank %d, Suit %d\n",i+1,hand.cards[i].rank,hand.cards[i].suit);
     }
 
+    // Skriv ut handens kort för felsökning
+    for (int i = 0; i < hand.size; i++) {
+        printf("Card %d: Rank %d, Suit %d\n", i + 1, hand.cards[i].rank, hand.cards[i].suit);
+    }
 
     // Dra ett startkort till bordet från kortleken
     addCardToPile(&discardPile, drawCard(&deck));
     Card topCard = discardPile.cards[discardPile.size - 1];
+    Suit currentSuit = topCard.suit;
 
     // Initiera Raylib och skapa ett fönster
     InitWindow(800, 600, "Card Game");
@@ -55,7 +49,7 @@ int main() {
     while (!WindowShouldClose()) {
         // Börja rita
         BeginDrawing();
-        
+
         // Rensa skärmen med en bakgrundsfärg
         ClearBackground(RAYWHITE);
 
@@ -63,67 +57,46 @@ int main() {
 
         // Rita översta kortet i kasseringshögen
         DrawText("Top card:", 350, 100, 20, DARKGRAY);
-        //RenderCard(topCard, 400, 200);
-        RenderCardSuit(topCard,400,200);
+        RenderCardSuit(topCard, 400, 200);
 
         if (Button(drawButton, "Draw Card", LIGHTGRAY)) {
             if (deck.size > 0) {
                 addCardToPile(&hand, drawCard(&deck));
-                addCardToPile(&hand, drawCard(&deck));
-                addCardToPile(&hand, drawCard(&deck));
             }
-            for(int i = 0;i<hand.size;i++){
-            printf("Card %d: Rank %s, Suit %s\n",i+1,rankToString(hand.cards[i].rank) ,suitToString(hand.cards[i].suit));
-    }
         }
 
         // Hantera användarinmatning
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            printCard(topCard);
-            printf("\n");
             Vector2 mousePosition = GetMousePosition();
             for (int i = 0; i < hand.size; i++) {
                 if (mousePosition.x > 100 + i * 70 && mousePosition.x < 160 + i * 70 &&
                     mousePosition.y > 400 && mousePosition.y < 490) {
                     Card selectedCard = hand.cards[i];
-                    printf("Card rank : %s  suit : %s \n", rankToString(selectedCard.rank),suitToString(selectedCard.suit));
+                    printf("Selected card rank: %s, suit: %s\n", rankToString(selectedCard.rank), suitToString(selectedCard.suit));
 
-                    if (isPlayable(selectedCard, topCard)) {
+                    if (isPlayable(selectedCard, topCard, currentSuit)) {
                         if (selectedCard.rank == EIGHT) {
                             Suit newSuit = ChooseNewSuit();
-                            selectedCard.suit = newSuit;
-                        }
-                        if (hasMultipleOfSameRank(&hand, selectedCard.rank)) {
-                           // Lägg till en knapp för att hantera kort av samma rang
-                            Vector2 playMultipleButtonPosition = { 300, 500 };
-                            Vector2 playMultipleButtonSize = { 200, 50 };
-                            DrawRectangle(playMultipleButtonPosition.x, playMultipleButtonPosition.y, playMultipleButtonSize.x, playMultipleButtonSize.y, LIGHTGRAY);
-                            DrawRectangleLines(playMultipleButtonPosition.x, playMultipleButtonPosition.y, playMultipleButtonSize.x, playMultipleButtonSize.y, DARKGRAY);
-                            DrawText("Play Multiple Cards", playMultipleButtonPosition.x + 10, playMultipleButtonPosition.y + 10, 20, DARKGRAY);
-
-                            if (mousePosition.x > playMultipleButtonPosition.x && mousePosition.x < playMultipleButtonPosition.x + playMultipleButtonSize.x &&
-                                mousePosition.y > playMultipleButtonPosition.y && mousePosition.y < playMultipleButtonPosition.y + playMultipleButtonSize.y) {
-                                playMultipleCardsOfSameRank(&hand, selectedCard.rank, &discardPile, selectedCard, i + 1, &topCard);
-                            }
+                            playCard(&hand, i, &discardPile, &topCard, &newSuit);
+                            currentSuit = newSuit;
                         } else {
-                            playCard(&hand, i + 1, &discardPile, &topCard);
+                            playCard(&hand, i, &discardPile, &topCard, &currentSuit);
                         }
                     } else {
                         printf("Invalid card choice.\n");
                     }
                 }
             }
+            printf("TopCard: %s of %s\n", rankToString(topCard.rank), suitToString(topCard.suit));
         }
 
         // Avsluta rita
         EndDrawing();
     }
-        UnloadTextures();
 
+    UnloadTextures();
 
     // Stäng Raylib och rensa resurser
-
-   
     CloseWindow();
 
     printf("Congratulations! You have played all your cards.\n");

@@ -7,12 +7,14 @@
 
 // Deklarationer för spelregler och spelrelaterade funktioner
 void chooseNewSuit(Card *card);
-int isPlayable(Card card, Card topCard);
+//int isPlayable(Card card, Card topCard);
+int isPlayable(Card card, Card topCard, Suit currentSuit);
 int hasMultipleOfSameRank(CardPile *hand, Rank rank);
 void playMultipleCardsOfSameRank(CardPile *hand, Rank rank, CardPile *discardPile, Card selectedCard, int initialChoice, Card *topCard);
 int findCardIndex(CardPile *hand, Card card);
-void playCard(CardPile *hand, int choice, CardPile *discardPile, Card *topCard);
+//void playCard(CardPile *hand, int choice, CardPile *discardPile, Card *topCard);
+void playCard(CardPile *hand, int choice, CardPile *discardPile, Card *topCard,Suit *currentSuit);
 void getDisplayRank(Rank rank, char *displayRank);
-void printHandIllustrationASCII(CardPile *hand);
+//void printHandIllustrationASCII(CardPile *hand);
 
 #endif // GAMEPLAY_H 

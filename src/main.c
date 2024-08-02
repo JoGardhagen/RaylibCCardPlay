@@ -97,6 +97,8 @@ void RenderCardSuit(Card card, int x, int y){
     }
 
     DrawText(rankStr, x + 10, y + 10, 20, textColor);
+    
+
 
 }
 
@@ -163,6 +165,7 @@ int main() {
                 if (mousePosition.x > 100 + i * 70 && mousePosition.x < 160 + i * 70 &&
                     mousePosition.y > 400 && mousePosition.y < 490) {
                     Card selectedCard = hand.cards[i];
+                    printf("Card rank: %d\n", selectedCard.rank);
 
                     if (isPlayable(selectedCard, topCard)) {
                         if (selectedCard.rank == EIGHT) {

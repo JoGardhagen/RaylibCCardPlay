@@ -11,21 +11,22 @@ CardPile discardPile;
 void initializeDeck(CardPile *deck) {
     deck->size = 0;
     deck->capacity = DECK_SIZE;
-    for (int suit = 0; suit < NUM_SUITS; suit++) {
-        for (int rank = 0; rank < NUM_RANKS; rank++) {
-            if (rank != EIGHT) {
+    for (int suit = 0; suit <= SPADES ; suit++) {
+        for (int rank = 0; rank < ACE; rank++) {
+            //if (rank != EIGHT) {
                 deck->cards[deck->size].rank = rank;
                 deck->cards[deck->size].suit = suit;
                 deck->size++;
-            }
+            //}
         }
     }
+    deck->size = DECK_SIZE;
     // Lägg till åttorna
-    for (int suit = 0; suit < NUM_SUITS; suit++) {
+    /*for (int suit = 0; suit <= SPADES; suit++) {
         deck->cards[deck->size].rank = EIGHT;
         deck->cards[deck->size].suit = suit;
         deck->size++;
-    }
+    }*/
 }
 
 void shuffleDeck(CardPile *deck) {

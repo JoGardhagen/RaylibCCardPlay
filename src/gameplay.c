@@ -1,6 +1,11 @@
 #include "gameplay.h"
+#include "rendering.h"
 #include <stdio.h>
 #include <string.h>
+#include <raylib.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
 
 // Välj ny färg för ett kort
 void chooseNewSuit(Card *card) {
@@ -47,9 +52,72 @@ int hasMultipleOfSameRank(CardPile *hand, Rank rank) {
     }
     return count > 1;
 }
+void playMultipleCardsOfSameRank(CardPile *hand, Rank rank, CardPile *discardPile, Card selectedCard, int initialChoice, Card *topCard) {
+    addCardToPile(discardPile, selectedCard);
+    removeCardFromPile(hand, initialChoice - 1);
+
+    bool promptActive = true;
+    Vector2 buttonPosition = { 300, 200 }; // Knappens position
+    Vector2 buttonSize = { 200, 50 }; // Knappens storlek
+
+    while (promptActive) {
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+
+        DrawText("You have multiple cards of the same rank.", 200, 100, 20, DARKGRAY);
+        DrawText("Click on the cards you want to play.", 200, 130, 20, DARKGRAY);
+        DrawText("Press the button below to finish choosing.", 200, 160, 20, DARKGRAY);
+
+        // Rita knappen
+        DrawRectangle(buttonPosition.x, buttonPosition.y, buttonSize.x, buttonSize.y, LIGHTGRAY);
+        DrawRectangleLines(buttonPosition.x, buttonPosition.y, buttonSize.x, buttonSize.y, DARKGRAY);
+        DrawText("Finish Choosing", buttonPosition.x + 10, buttonPosition.y + 10, 20, DARKGRAY);
+
+        // Rita korten
+        for (int i = 0; i < hand->size; i++) {
+            if (hand->cards[i].rank == rank) {
+                RenderCardSuit(hand->cards[i], 100 + i * 70, 200);
+            }
+        }
+
+        EndDrawing();
+
+        // Kontrollera om knappen har klickats
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            Vector2 mousePosition = GetMousePosition();
+            if (mousePosition.x > buttonPosition.x && mousePosition.x < buttonPosition.x + buttonSize.x &&
+                mousePosition.y > buttonPosition.y && mousePosition.y < buttonPosition.y + buttonSize.y) {
+                promptActive = false;
+            }
+        }
+
+        // Kontrollera om en av korten har klickats
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            Vector2 mousePosition = GetMousePosition();
+            for (int i = 0; i < hand->size; i++) {
+                if (hand->cards[i].rank == rank) {
+                    if (mousePosition.x > 100 + i * 70 && mousePosition.x < 160 + i * 70 &&
+                        mousePosition.y > 200 && mousePosition.y < 290) {
+                        Card cardToPlay = hand->cards[i];
+                        addCardToPile(discardPile, cardToPlay);
+                        removeCardFromPile(hand, i);
+                        if (hand->size == 0) {
+                            promptActive = false; // Stoppa om alla kort har spelats
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (discardPile->size > 0) {
+        *topCard = discardPile->cards[discardPile->size - 1];
+    }
+}
 
 // Spela flera kort av samma rang
-void playMultipleCardsOfSameRank(CardPile *hand, Rank rank, CardPile *discardPile, Card selectedCard, int initialChoice, Card *topCard) {
+/*void playMultipleCardsOfSameRank(CardPile *hand, Rank rank, CardPile *discardPile, Card selectedCard, int initialChoice, Card *topCard) {
     printf("You played: ");
     printCard(selectedCard);
     printf("\n");
@@ -84,7 +152,7 @@ void playMultipleCardsOfSameRank(CardPile *hand, Rank rank, CardPile *discardPil
     if (discardPile->size > 0) {
         *topCard = discardPile->cards[discardPile->size - 1];
     }
-}
+}*/
 
 // Hitta index för ett kort i handen
 int findCardIndex(CardPile *hand, Card card) {

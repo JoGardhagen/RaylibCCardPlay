@@ -17,6 +17,7 @@ set(SOURCES
     src/card.c
     src/card_pile.c
     src/gameplay.c
+    src/rendering.c
 )
 
 # Skapa exekverbar fil

@@ -11,7 +11,6 @@ extern Texture2D diamond;
 extern Texture2D club;
 extern Texture2D spade;
 
-// Deklaration av RenderCardSuit
 void LoadTextures();
 void UnloadTextures();
 void RenderCard(Card card, int posX, int posY);

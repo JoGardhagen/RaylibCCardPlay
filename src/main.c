@@ -12,25 +12,33 @@
 //Texture2D heart, diamond, club, spade;
 
 
-Suit ChooseNewSuit(void);
+//Suit ChooseNewSuit(void);
+void printCardDetails(CardPile *pile) {
+    for (int i = 0; i < pile->size; i++) {
+        printf("Card %d: Rank %d, Suit %d\n", i, pile->cards[i].rank, pile->cards[i].suit);
+    }
+}
 
 int main() {
     // Initiera och blanda kortleken
-    CardPile deck = { .cards = {0}, .size = 0, .capacity = DECK_SIZE };
+    
     initializeDeck(&deck);
     shuffleDeck(&deck);
+    printCardDetails(&deck);
 
-    // Initiera spelarens hand och kasseringshögen
     CardPile hand = { .cards = {0}, .size = 0, .capacity = DECK_SIZE };
-    CardPile discardPile = { .cards = {0}, .size = 0, .capacity = DECK_SIZE };
 
-    CardPile aiHand = { .cards = {0}, .size = 0, .capacity = DECK_SIZE };
+    //CardPile aiHand = { .cards = {0}, .size = 0, .capacity = DECK_SIZE };
 
     // Dra initiala kort till spelarens hand
     for (int i = 0; i < 5; i++) {
         addCardToPile(&hand, drawCard(&deck));
-        addCardToPile(&aiHand, drawCard(&deck));
+        //addCardToPile(&aiHand, drawCard(&deck));
     }
+    for(int i = 0;i<hand.size;i++){
+            printf("Card %d: Rank %d, Suit %d\n",i+1,hand.cards[i].rank,hand.cards[i].suit);
+    }
+
 
     // Dra ett startkort till bordet från kortleken
     addCardToPile(&discardPile, drawCard(&deck));
@@ -47,7 +55,7 @@ int main() {
     while (!WindowShouldClose()) {
         // Börja rita
         BeginDrawing();
-
+        
         // Rensa skärmen med en bakgrundsfärg
         ClearBackground(RAYWHITE);
 
@@ -73,7 +81,7 @@ int main() {
                 if (mousePosition.x > 100 + i * 70 && mousePosition.x < 160 + i * 70 &&
                     mousePosition.y > 400 && mousePosition.y < 490) {
                     Card selectedCard = hand.cards[i];
-                    printf("Card rank: %d\n", selectedCard.rank);
+                    printf("Card rank : %d  suit : %d \n", selectedCard.rank,selectedCard.suit);
 
                     if (isPlayable(selectedCard, topCard)) {
                         if (selectedCard.rank == EIGHT) {

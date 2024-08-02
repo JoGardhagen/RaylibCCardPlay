@@ -4,33 +4,34 @@
 #include "deck.h"
 #include "card_pile.h"
 
-CardPile deck;
-CardPile discardPile;
+
+
+
+CardPile deck = { .cards = {0}, .size = 0, .capacity = DECK_SIZE };
+CardPile discardPile = { .cards = {0}, .size = 0, .capacity = DECK_SIZE };
 
 void initializeDeck(CardPile *deck) {
-    deck->size = 0;
-    deck->capacity = DECK_SIZE;
-    for (int suit = HEARTS; suit <= SPADES ; suit++) {
-        for (int rank = 0; rank < ACE; rank++) {
-            //if (rank != EIGHT) {
-                deck->cards[deck->size].rank = rank;
-                deck->cards[deck->size].suit = suit;
-                deck->size++;
-            //}
+    int index = 0;
+    for (int suit = HEARTS; suit <= SPADES; suit++) {
+        for (int rank = TWO; rank <= ACE; rank++) {
+            deck->cards[index].rank = rank;
+            deck->cards[index].suit = suit;
+            index++;
         }
     }
     deck->size = DECK_SIZE;
+    deck->capacity = DECK_SIZE;
 }
-
 void shuffleDeck(CardPile *deck) {
-    srand((unsigned int)time(NULL));
-    for (int i = 0; i < deck->size; i++) {
-        int j = rand() % deck->size;
+    srand(time(NULL)); // Initiera slumpgeneratorn
+    for (int i = deck->size - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
         Card temp = deck->cards[i];
         deck->cards[i] = deck->cards[j];
         deck->cards[j] = temp;
     }
 }
+
 // Dra ett kort från kortleken
 Card drawCard(CardPile *deck) {
     if (deck->size > 0) {

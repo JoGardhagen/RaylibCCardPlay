@@ -4,7 +4,6 @@
 #include "card.h"
 #include "card_pile.h"
 #include "deck.h"
-//#include "ai.h"
 
 // Deklarationer för spelregler och spelrelaterade funktioner
 void chooseNewSuit(Card *card);

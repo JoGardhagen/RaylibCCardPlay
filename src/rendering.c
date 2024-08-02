@@ -10,7 +10,13 @@
 #include <unistd.h>
 #include <limits.h>
 
-Texture2D heart, diamond, club, spade;
+Texture2D heart;
+Texture2D diamond;
+Texture2D club;
+Texture2D spade;
+
+//extern Texture2D heart, diamond, club, spade;
+//extern Texture2D texture;
 void DrawCardBackground(int posX, int posY, int cardWidth, int cardHeight) {
     // Rita kortets bakgrund
     DrawRectangle(posX, posY, cardWidth, cardHeight, WHITE);
@@ -162,4 +168,33 @@ void UnloadTextures() {
     UnloadTexture(diamond);
     UnloadTexture(club);
     UnloadTexture(spade);
+}
+void RenderPlayerHand(CardPile *hand) {
+    for (int i = 0; i < hand->size; i++) {
+        RenderCardSuit(hand->cards[i], 100 + i * 70, 400);
+    }
+}
+Suit ChooseNewSuit(void) {
+    // Funktion för att välja en ny färg när en 8:a spelas
+    Suit newSuit = HEARTS;  // Default värde
+
+    // Definiera knapparnas rektanglar
+    Rectangle heartButton = { 300, 200, 50, 50 };
+    Rectangle diamondButton = { 300, 260, 50, 50 };
+    Rectangle clubButton = { 300, 320, 50, 50 };
+    Rectangle spadeButton = { 300, 380, 50, 50 };
+
+    while (true) {
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+
+        // Rita knapparna med texturer
+        if (DrawTexturedButton(heartButton, heart)) { newSuit = HEARTS; break; }
+        if (DrawTexturedButton(diamondButton, diamond)) { newSuit = DIAMONDS; break; }
+        if (DrawTexturedButton(clubButton, club)) { newSuit = CLUBS; break; }
+        if (DrawTexturedButton(spadeButton, spade)) { newSuit = SPADES; break; }
+        EndDrawing();
+    }
+
+    return newSuit;
 }

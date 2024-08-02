@@ -18,7 +18,7 @@ const char* rankToString(Rank rank);
 const char* suitToString(Suit suit);
 
 void printCard(Card card); 
-void printCardIllustrationASCII(Card card);
+//void printCardIllustrationASCII(Card card);
 
 
 #endif

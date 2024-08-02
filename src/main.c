@@ -72,16 +72,21 @@ int main() {
                 addCardToPile(&hand, drawCard(&deck));
                 addCardToPile(&hand, drawCard(&deck));
             }
+            for(int i = 0;i<hand.size;i++){
+            printf("Card %d: Rank %s, Suit %s\n",i+1,rankToString(hand.cards[i].rank) ,suitToString(hand.cards[i].suit));
+    }
         }
 
         // Hantera användarinmatning
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            printCard(topCard);
+            printf("\n");
             Vector2 mousePosition = GetMousePosition();
             for (int i = 0; i < hand.size; i++) {
                 if (mousePosition.x > 100 + i * 70 && mousePosition.x < 160 + i * 70 &&
                     mousePosition.y > 400 && mousePosition.y < 490) {
                     Card selectedCard = hand.cards[i];
-                    printf("Card rank : %d  suit : %d \n", selectedCard.rank,selectedCard.suit);
+                    printf("Card rank : %s  suit : %s \n", rankToString(selectedCard.rank),suitToString(selectedCard.suit));
 
                     if (isPlayable(selectedCard, topCard)) {
                         if (selectedCard.rank == EIGHT) {
